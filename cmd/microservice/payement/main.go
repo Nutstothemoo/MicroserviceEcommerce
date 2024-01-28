@@ -5,21 +5,23 @@ import (
 	"log"
 	"microservice/pkg/common/cmd"
 	"os"
+	payements_app "microservice/pkg/payements/application"
+	payements_infra_orders "microservice/pkg/payements/infrastructure/orders"
 	"microservice/pkg/payements/application"
 	"microservice/pkg/payements/infra/orders"
 	"microservice/pkg/payements/interfaces/amqp"
-	
+
 )
 
 func main() {	
-	 log.Println("Starting the payement microservice...")
-	 defer log.Println("Shutting down the payement microservice...")
-	 ctx := cmd.Context()
+	log.Println("Starting the payement microservice...")
+	defer log.Println("Shutting down the payement microservice...")
+	ctx := cmd.Context()
 
-	 payementsInterface :=createPayementsMicroService()
+	payementsInterface :=createPayementsMicroService()
 	
-	 if err := payementsInterface.Start(ctx); err != nil {
-		 panic(err)
+	if err := payementsInterface.Start(ctx); err != nil {
+		panic(err)
 	}
 
 }

@@ -5,16 +5,17 @@ import (
 	"microservice/pkg/common/price"
 )
 
-type productID string
+type ProductID string
+
 var ErrEmptyProductID = errors.New("product id can not be empty")
 
 type Product struct {
-	id productID
+	id ProductID
 	name string
 	price price.Price	
 }
 
-func (p *Product) ID() productID {
+func (p *Product) ProductID() ProductID {
 	return p.id
 }
 
@@ -26,7 +27,7 @@ func (p *Product) Price() price.Price {
 	return p.price
 }
 
-func NewProduct(id productID, name string, price price.Price) (Product, error) {	
+func NewProduct(id ProductID, name string, price price.Price) (Product, error) {	
 	if id == "" {
 		return Product{}, ErrEmptyProductID
 	}

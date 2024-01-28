@@ -4,18 +4,18 @@ import (
 	"errors"
 )
 
-type orderID string 
+type OrderID string 
 
 var ErrEmptyOrderID = errors.New("order id can not be empty")
 
 type Order struct {
-	id ID
+	id OrderID
 	product Product
 	adress Adress
 	paid bool
 }
 
-func (o *Order) ID() orderID {
+func (o *Order) OrderID() OrderID {
 	return o.id
 }
 
@@ -35,15 +35,9 @@ func (o *Order) Paid() bool {
 	return o.paid
 }
 
-func NewOrder(id orderID, product Product, adress Adress) (*Order, error) {
+func NewOrder(id OrderID, product Product, adress Adress) (*Order, error) {
 	if id == "" {
 		return nil, ErrEmptyOrderID
-	}
-	if product == nil {
-		return nil, errors.New("product can not be empty")
-	}
-	if adress == nil {
-		return nil, errors.New("adress can not be empty")
 	}
 	return &Order{id, product, adress, false}, nil
 }

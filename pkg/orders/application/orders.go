@@ -13,7 +13,7 @@ type productsService interface {
 
 
 type payementsService interface {
-	InitializeOrderPayement(orderID orders.ID, price price.Price) (error)
+	InitializeOrderPayement(orderID orders.OrderID, price price.Price) (error)
 }
 
 type 	OrdersService struct {
@@ -42,7 +42,7 @@ type PlaceOrderCommandAddress struct {
 }
 
 type MarkOrderAsPaidCommand struct {
-	OrderID orders.ID	
+	OrderID orders.OrderID	
 }
 
 func (s OrdersService) PlaceOrder(cmd PlaceOrderCommand) error {
@@ -56,12 +56,12 @@ func (s OrdersService) PlaceOrder(cmd PlaceOrderCommand) error {
 	if err != nil {
 		return errors.Wrap(err, "Error creating address")
 	}
-	product, err := s.productsService.ProductsByID(cmd.ProductID)
+	product, err := s.productsService.ProductsByID(orders.ProductID(cmd.ProductID))
 	if err != nil {
 		return errors.Wrap(err, "Error getting product by id")
 	}
 	newOrder, err := orders.NewOrder(
-		orders.ID(cmd.OrderID),
+		orders.OrderID(cmd.OrderID),
 		product,
 		address,
 	)
@@ -71,10 +71,10 @@ func (s OrdersService) PlaceOrder(cmd PlaceOrderCommand) error {
 	if err := s.ordersRepository.Save(newOrder); err != nil {
 		return errors.Wrap(err, "Error saving new order")
 	}
-	if err := s.payementsService.InitializeOrderPayement(newOrder.ID(), newOrder.Product().Price()); err != nil {
+	if err := s.payementsService.InitializeOrderPayement(newOrder.OrderID(), (*newOrder.Product()).Price()); err != nil {
 		return errors.Wrap(err, "Error initializing order payement")
 	}
-	log.Printf("Order %s has been placed", NewOrder.ID)
+	log.Printf("Order %s has been placed", newOrder.ID)
 	return nil
 }	
 
