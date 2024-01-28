@@ -1,5 +1,4 @@
-package http
-
+package htt
 import (
 	"net/http"
 	"github.com/go-chi/render"

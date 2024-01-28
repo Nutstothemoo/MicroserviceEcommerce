@@ -1,6 +1,9 @@
 package application
 
 import (
+	"log"
+	"github.com/Nutstothemoo/microservice/pkg/common/"
+	"github.com/pkg/errors"
 )
 
 type productsService interface {

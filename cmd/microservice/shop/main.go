@@ -1,6 +1,5 @@
 package main 
 
-
 import (
 	"log"
 	"fmt"
@@ -18,7 +17,7 @@ func main() {
 		Addr: os.Getenv("SHOP_SERVICE_BIND_ADDR"),
 		Handler: r,
 	}	
-	go func {
+	go func() {
 		if err:= server.ListenAndServe(); err != http.ErrServerClosed {
 			panic(err)
 		}

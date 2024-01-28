@@ -7,8 +7,7 @@ import (
 	"net/http"
 )
 
-func main() 
-{	
+func main() {	
 	 log.Println("Starting the payement microservice...")
 	 defer log.Println("Shutting down the payement microservice...")
 	 ctx := cmd.Context()
