@@ -1,10 +1,10 @@
-package main 
+package main
 
 import (
-	"log"
 	"fmt"
+	"log"
+	"microservice/pkg/common/cmd"
 	"os"
-	"net/http"
 )
 
 func main() {	

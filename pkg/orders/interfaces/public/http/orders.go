@@ -2,6 +2,13 @@ package http
 
 import (
 	"net/http"
+	common_http "microservice/pkg/common/http"
+	"microservice/pkg/orders/application"
+	"microservice/pkg/orders/domain/orders"
+	"github.com/google/uuid"
+	// "microservice/pkg/products/domain/products"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/render"
 )
 
 func AddRoutes(router *chi.Mux, service application.OrdersService, repository orders.Repository){
@@ -31,13 +38,13 @@ type PostOrderAddress struct {
 func (o OrdersResource) Post(w http.ResponseWriter, r *http.Request) {
 	req := PostOrderRequest{}
 	if err := render.Decode(r , &req); err != nil {
-		_ = render.Render(w, r, common_http.ErrInvalidRequest(err))
+		_ = render.Render(w, r, common_http.ErrBadRequest(err))
 		return
 	}
 	cmd := application.PostOrderCommand{
 		OrderID: orders.ID(uuid.New().String()),
 		ProductID: products_domain.ProductID(req.ProductID),
-		Address: application.PlaceOrderCommandAdress(req.Address)
+		Address: application.PlaceOrderCommandAdress(req.Address),
 	}
 	if err:= o.service.PlaceOrder(cmd); err != nil {
 		_ = render.Render(w, r, common_http.ErrInternal(err))
@@ -49,12 +56,12 @@ func (o OrdersResource) Post(w http.ResponseWriter, r *http.Request) {
 }
 
 type PostOrderResponse struct {
-	OrderID string `json:"order_id"`
+	OrderID string 	`json:"order_id"`
 }
 
 type OrderPaidView struct {
-	ID string `json:"id"`
-	isPaid bool `json:"is_paid"`
+	ID string 		`json:"id"`
+	isPaid bool 	`json:"is_paid"`
 }
 
 func (o OrdersResource) GetPaid(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +73,6 @@ func (o OrdersResource) GetPaid(w http.ResponseWriter, r *http.Request) {
 	}
 	render.Respond(w, r, OrderPaidView{
 		ID: string(order.ID()),
-		IsPaid: order.IsPaid(),
+		isPaid: order.	IsPaid(),
 	})
 }

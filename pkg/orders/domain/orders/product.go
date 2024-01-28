@@ -2,7 +2,7 @@ package orders
 
 import (
 	"errors"
-	"pkg/common/price"
+	"microservice/pkg/common/price"
 )
 
 type productID string
@@ -28,10 +28,10 @@ func (p *Product) Price() price.Price {
 
 func NewProduct(id productID, name string, price price.Price) (Product, error) {	
 	if id == "" {
-		return nil, ErrEmptyProductID
+		return Product{}, ErrEmptyProductID
 	}
 	if name == "" {
-		return nil, errors.New("name can not be empty")
+		return Product{}, errors.New("name can not be empty")
 	}
 
 	
