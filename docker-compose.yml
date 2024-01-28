@@ -1,0 +1,58 @@
+version: '1.0'
+services:
+  monolight:
+    build: path/to/monolight
+    entrypoint: []
+    ports:
+      - 8090:8080
+    environment:
+      - SHOP_MONOLIGHT_BIND_ADDR=:8080
+    volumes:
+      - ./cmd/:$GO_PROJECT_DIR/cmd/
+      - ./pkg/:$GO_PROJECT_DIR/pkg/
+  orders:
+    build: path/to/orders
+    entrypoint: []
+    ports:
+      - 8070:8080
+    environment:
+      - SHOP_ORDERS_SERVICE_BIND_ADDR=:8080
+      - SHOP_RABBITMQ_ADDR=rabbitmq:5672
+      - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=:ordertopay
+      - SHOP_ORDERS_SERVICE_DB_ADDR=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+      - SHOP_SHOP_SERVICE_ADDR= http://shopmicroservice:8080
+    volumes:
+      - ./cmd/:$GO_PROJECT_DIR/cmd/
+      - ./pkg/:$GO_PROJECT_DIR/pkg/
+    depends_on:
+      - postgres
+      - rabbitmq
+  payements:
+    build: path/to/payments
+    entrypoint: []
+    ports:
+      - 8072:8080
+    environment:
+      - SHOP_RABBITMQ_ADDR=rabbitmq:5672
+      - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=:ordertopay
+      - SHOP_ORDERS_SERVICE_ADDR=http://ordersmicroservice:8080
+      - SHOP_PAYMENTS_SERVICE_DB_ADDR=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+      
+    volumes:
+      - ./cmd/:$GO_PROJECT_DIR/cmd/
+      - ./pkg/:$GO_PROJECT_DIR/pkg/
+    depends_on:
+      - rabbitmq
+  shop:
+    build: path/to/shop
+    entrypoint: []
+    environment:
+      - SHOP_SHOP_SERVICE_BIND_ADDR=:8080
+      - SHOP_RABBITMQ_ADDR=rabbitmq:5672
+      - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=:ordertopay
+      - SHOP_SHOP_SERVICE_DB_ADDR=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+    volumes:
+      - ./cmd/:$GO_PROJECT_DIR/cmd/
+      - ./pkg/:$GO_PROJECT_DIR/pkg/
+    depends_on:
+      - rabbitmq
