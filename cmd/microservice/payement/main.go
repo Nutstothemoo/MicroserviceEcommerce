@@ -5,6 +5,10 @@ import (
 	"log"
 	"microservice/pkg/common/cmd"
 	"os"
+	"microservice/pkg/payements/application"
+	"microservice/pkg/payements/infra/orders"
+	"microservice/pkg/payements/interfaces/amqp"
+	
 )
 
 func main() {	

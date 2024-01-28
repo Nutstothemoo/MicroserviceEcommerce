@@ -1,10 +1,9 @@
 package cmd
 
 import (
-	"context"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-
+	"net/http"
 )
 
 func CreateRouter() *chi.Mux {

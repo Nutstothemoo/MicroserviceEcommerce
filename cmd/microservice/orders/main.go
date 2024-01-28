@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"microservice/pkg/common/cmd"
+	orders_public_http "microservice/pkg/orders/interfaces/public/http"
+	order_private_http "microservice/pkg/orders/interfaces/private/http"
 	"net/http"
 	"os"
 	"github.com/go-chi/chi"
@@ -43,6 +45,6 @@ func createOrderMicroservice() (router *chi.Mux, closeFn func()){
 	order_private_http.AddRoutes(r, ordersService, ordersRepo)
 
 	return r, func() {
-
+				shopHTTPClient.Close()
 	}
 }
