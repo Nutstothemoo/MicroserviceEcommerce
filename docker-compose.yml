@@ -1,15 +1,5 @@
 version: '1.0'
 services:
-  monolight:
-    build: path/to/monolight
-    entrypoint: []
-    ports:
-      - 8090:8080
-    environment:
-      - SHOP_MONOLIGHT_BIND_ADDR=:8080
-    volumes:
-      - ./cmd/:$GO_PROJECT_DIR/cmd/
-      - ./pkg/:$GO_PROJECT_DIR/pkg/
   orders:
     build: path/to/orders
     entrypoint: []
@@ -20,7 +10,7 @@ services:
       - SHOP_RABBITMQ_ADDR=rabbitmq:5672
       - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=:ordertopay
       - SHOP_ORDERS_SERVICE_DB_ADDR=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
-      - SHOP_SHOP_SERVICE_ADDR= http://shopmicroservice:8080
+      - SHOP_SHOP_SERVICE_ADDR=http://shop:8080
     volumes:
       - ./cmd/:$GO_PROJECT_DIR/cmd/
       - ./pkg/:$GO_PROJECT_DIR/pkg/

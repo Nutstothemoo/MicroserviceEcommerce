@@ -4,7 +4,7 @@ import (
 	"net/http"
 	common_http "microservice/pkg/common/http"
 	"microservice/pkg/orders/application"
-	"microservice/pkg/orders/domain/orders"
+	"microservice/pkg/orders/domain"
 	"github.com/google/uuid"
 	// "microservice/pkg/products/domain/products"
 	"github.com/go-chi/chi"
