@@ -5,7 +5,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"microservice/pkg/shop/domain/products"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"database/sql"
+	_ "github.com/lib/pq"
 )
+
 
 type MemoryRepository struct {
 	products []products.Product	
@@ -38,6 +41,9 @@ func (m MemoryRepository) ByID(id products.ID) (*products.Product, error){
 func (m *MemoryRepository) AllProducts()([]products.Product, error) {
 	return m.products, nil
 }
+
+
+// MONGODB
 
 type MongoDBRepository struct {
     collection *mongo.Collection
@@ -88,4 +94,34 @@ func (m *MongoDBRepository) AllProducts() ([]products.Product, error) {
         return nil, err
     }
     return products, nil
+}
+
+// POSTGRES 
+
+
+func NewPostgresRepository(dataSourceName string) (*PostgresRepository, error) {
+	db, err := sql.Open("postgres", dataSourceName)
+	if err != nil {
+			return nil, err
+	}
+
+	return &PostgresRepository{db}, nil
+}
+
+func (p *PostgresRepository) Save(productToSave *product.Product) error {
+	// Implémentez la logique pour sauvegarder le produit dans PostgreSQL
+	// ...
+	return nil
+}
+
+func (p *PostgresRepository) ByID(id products.ID) (*products.Product, error) {
+	// Implémentez la logique pour obtenir un produit par ID de PostgreSQL
+	// ...
+	return nil, nil
+}
+
+func (p *PostgresRepository) AllProducts() ([]products.Product, error) {
+	// Implémentez la logique pour obtenir tous les produits de PostgreSQL
+	// ...
+	return nil, nil
 }

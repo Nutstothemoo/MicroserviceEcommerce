@@ -1,48 +1,79 @@
-version: '1.0'
+version: '3.2'
 services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - rabbitmq_go_net
+
   orders:
-    build: path/to/orders
-    entrypoint: []
+    image: my-alpine-go
+    command: ["go", "run", "main.go"]
     ports:
       - 8070:8080
     environment:
-      - SHOP_ORDERS_SERVICE_BIND_ADDR=:8080
-      - SHOP_RABBITMQ_ADDR=rabbitmq:5672
-      - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=:ordertopay
-      - SHOP_ORDERS_SERVICE_DB_ADDR=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
-      - SHOP_SHOP_SERVICE_ADDR=http://shop:8080
+          - GO_PROJECT_DIR=/app
+          - SHOP_SHOP_SERVICE_BIND_ADDR=:8080
+          - SHOP_RABBITMQ_ADDR=rabbitmq:5672
+          - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=ordertopay
+          - SHOP_ORDERS_SERVICE_ADDR=http://orders:8080
+          - SHOP_PAYMENTS_SERVICE_ADDR=http://payments:8080
+          - SHOP_DB_URL=postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
     volumes:
-      - ./cmd/:$GO_PROJECT_DIR/cmd/
-      - ./pkg/:$GO_PROJECT_DIR/pkg/
+      - ./cmd/:/app/cmd/
+      - ./pkg/:/app/pkg/
     depends_on:
-      - postgres
       - rabbitmq
-  payements:
-    build: path/to/payments
-    entrypoint: []
+    networks:
+      - rabbitmq_go_net
+
+  payments:
+    image: my-alpine-go
+    command: ["go", "run", "main.go"]
     ports:
       - 8072:8080
     environment:
-      - SHOP_RABBITMQ_ADDR=rabbitmq:5672
-      - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=:ordertopay
-      - SHOP_ORDERS_SERVICE_ADDR=http://ordersmicroservice:8080
-      - SHOP_PAYMENTS_SERVICE_DB_ADDR=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
-      
-    volumes:
-      - ./cmd/:$GO_PROJECT_DIR/cmd/
-      - ./pkg/:$GO_PROJECT_DIR/pkg/
-    depends_on:
-      - rabbitmq
-  shop:
-    build: path/to/shop
-    entrypoint: []
-    environment:
+      - GO_PROJECT_DIR=/app
       - SHOP_SHOP_SERVICE_BIND_ADDR=:8080
       - SHOP_RABBITMQ_ADDR=rabbitmq:5672
-      - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=:ordertopay
-      - SHOP_SHOP_SERVICE_DB_ADDR=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+      - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=ordertopay
+      - SHOP_ORDERS_SERVICE_ADDR=http://orders:8080
+      - SHOP_PAYMENTS_SERVICE_ADDR=http://payments:8080
+      - SHOP_DB_URL=postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
     volumes:
-      - ./cmd/:$GO_PROJECT_DIR/cmd/
-      - ./pkg/:$GO_PROJECT_DIR/pkg/
+      - ./cmd/microservice/payments:/app/cmd/microservice/payments
+      - ./pkg/:/app/pkg/
     depends_on:
       - rabbitmq
+    networks:
+      - rabbitmq_go_net
+
+  shop:
+    image: my-alpine-go
+    command: ["go", "run", "main.go"]
+    ports:
+      - 8071:8080
+    environment:
+        - GO_PROJECT_DIR=/app
+        - SHOP_RABBITMQ_ADDR=rabbitmq:5672
+        - SHOP_RABBITMQ_ORDER_TO_PAY_QUEUE=ordertopay
+        - SHOP_ORDERS_SERVICE_ADDR=http://orders:8080
+        - SHOP_PAYMENTS_SERVICE_ADDR=http://payments:8080
+        - SHOP_DB_URL=postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+    volumes:
+      - ./cmd/microservice/shop:/app/cmd/microservice/shop
+      - ./pkg/:/app/pkg/
+    depends_on:
+      - rabbitmq
+    networks:
+      - rabbitmq_go_net
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge
