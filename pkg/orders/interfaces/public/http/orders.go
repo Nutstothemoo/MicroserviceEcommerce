@@ -42,7 +42,7 @@ func (o OrdersResource) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cmd := application.PostOrderCommand{
-		OrderID: orders.ID(uuid.New().String()),
+		OrderID: orders.OrderID(uuid.New().String()),
 		ProductID: products_domain.ProductID(req.ProductID),
 		Address: application.PlaceOrderCommandAdress(req.Address),
 	}
@@ -65,8 +65,8 @@ type OrderPaidView struct {
 }
 
 func (o OrdersResource) GetPaid(w http.ResponseWriter, r *http.Request) {
-	orderID := orders.ID(chi.URLParam(r, "id"))
-	order, err := o.repository.ByID(orderID)
+	orderID := orders.OrderID(chi.URLParam(r, "id"))
+	order, err := o.repository.Get(orderID)
 	if err != nil {
 		_ = render.Render(w, r, common_http.ErrInternal(err))
 		return

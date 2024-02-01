@@ -4,7 +4,7 @@ import (
 	"net/http"
 	common_http "microservice/pkg/common/http"
 	"microservice/pkg/orders/application"
-	"microservice/pkg/orders/domain/orders"
+	"microservice/pkg/orders/domain"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 )
@@ -23,7 +23,7 @@ type OrdersResource struct {
 func (o OrdersResource) PostPaid(w http.ResponseWriter, r *http.Request) {
 	orderID := chi.URLParam(r, "id")
 	cmd := application.MarkOrderAsPaidCommand{
-		OrderID: orders.ID(orderID),
+		OrderID: orders.OrderID(orderID),
 	}
 	if err := o.service.MarkOrderAsPaid(cmd); err != nil {
 		_ = render.Render(w, r, common_http.ErrInternal(err))

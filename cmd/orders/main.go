@@ -3,10 +3,14 @@ package main
 import (
 	"log"
 	"microservice/pkg/common/cmd"
-	orders_public_http "microservice/pkg/orders/interfaces/public/http"
+	application_shop "microservice/pkg/shop/application"
+	payements_app "microservice/pkg/payements/application"
+	application_order "microservice/pkg/orders/application"
 	order_private_http "microservice/pkg/orders/interfaces/private/http"
+	orders_public_http "microservice/pkg/orders/interfaces/public/http"
 	"net/http"
 	"os"
+
 	"github.com/go-chi/chi"
 )
 
@@ -41,8 +45,17 @@ func createOrderMicroservice() (router *chi.Mux, closeFn func()){
 
 	r:= cmd.CreateRouter()
 
-	orders_public_http.AddRoutes(r, ordersService, ordersRepo )
-	order_private_http.AddRoutes(r, ordersService, ordersRepo)
+	// Initialize your products service, payments service, and orders repository here.
+	productsService := 	application_shop.NewProductsService(productsRepository, productReadModel)
+	payementsService := application_shop.NewPayementsService(shopHTTPClient)
+	// ordersRepository := application_order.NewOrdersRepository()
+	
+	// Initialize your orders service.
+
+	ordersService := application_order.NewOrdersService(productsService, payementsService, ordersRepository)
+
+	orders_public_http.AddRoutes(r, *ordersService, ordersRepo )
+	order_private_http.AddRoutes(r, *ordersService, ordersRepo)
 
 	return r, func() {
 				shopHTTPClient.Close()

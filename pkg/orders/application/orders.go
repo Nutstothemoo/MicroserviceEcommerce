@@ -3,7 +3,7 @@ package application
 import (
 	"log"
 	"microservice/pkg/common/price"
-	"microservice/pkg/orders/domain/orders"
+	"microservice/pkg/orders/domain"
 	"github.com/pkg/errors"
 )
 
@@ -68,13 +68,13 @@ func (s OrdersService) PlaceOrder(cmd PlaceOrderCommand) error {
 	if err != nil {
 		return errors.Wrap(err, "Error creating new order")
 	}
-	if err := s.ordersRepository.Save(newOrder); err != nil {
+	if err := s.ordersRepository.Create(newOrder); err != nil {
 		return errors.Wrap(err, "Error saving new order")
 	}
 	if err := s.payementsService.InitializeOrderPayement(newOrder.OrderID(), (*newOrder.Product()).Price()); err != nil {
 		return errors.Wrap(err, "Error initializing order payement")
 	}
-	log.Printf("Order %s has been placed", newOrder.ID)
+	log.Printf("Order %s has been placed", newOrder.OrderID())
 	return nil
 }	
 
@@ -84,15 +84,15 @@ func (s OrdersService) MarkOrderAsPaid(cmd MarkOrderAsPaidCommand) error {
 		return errors.Wrap(err, "Error getting order by id")
 	}
 	o.MarkAsPaid()
-	if err := s.ordersRepository.Save(o); err != nil {
+	if err := s.ordersRepository.Create(&o); err != nil {
 		return errors.Wrap(err, "Error saving order")
 	}
-	log.Printf("Order %s has been marked as paid", o.ID())
+	log.Printf("Order %s has been marked as paid", o.OrderID())
 	return nil
 }
 
-func(s OrdersService ) OrderById(id orders.ID) (orders.Order, error) {
-	o, err := s.ordersRepository.OrderById(id)
+func(s OrdersService ) OrderById(id orders.OrderID) (orders.Order, error) {
+	o, err := s.ordersRepository.GetById(string(id))
 	if err != nil {
 		return orders.Order{}, errors.Wrap(err, "Error getting order by id")
 	}
