@@ -2,14 +2,14 @@ package products
 
 import (
 	"errors"
-	"price"
+	"microservice/pkg/common/price"
 )
 
 type ID string
 
 var (
-	ErrEmpty ID = errors.New("ID cannot be empty")
-	ErrEmpty Name = errors.New("Name cannot be empty")
+	ErrIDEmpty  = errors.New("ID cannot be empty")
+	ErrNameEmpty  = errors.New("Name cannot be empty")
 )
 
 type Product struct {
@@ -21,12 +21,12 @@ type Product struct {
 
 func NewProduct(id ID, name string, price price.Price, description string) (Product, error) {
 	if id == "" {
-		return nil, ErrEmpty
+		return Product{}, ErrIDEmpty 
 	}
 	if name == "" {
-		return nil, ErrEmpty
+		return Product{}, ErrNameEmpty
 	}
-	return &Product{
+	return Product{
 		id:          id,
 		name:        name,
 		price:       price,
