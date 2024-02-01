@@ -7,6 +7,6 @@ import (
 var ErrNotFound = errors.New("Product not found")
 
 type Repository interface {
-	Save(*product) error
-	ByID(ID) (*product, error)
+	Save(Product) error
+	ByID(ID) (Product, error)
 }

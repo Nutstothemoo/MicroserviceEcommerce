@@ -1,6 +1,9 @@
 package application
 
 import (
+	"microservice/pkg/products/domain/products"
+	"microservice/pkg/common/price"
+	"errors"
 )
 
 type productReadModel interface {
@@ -35,7 +38,7 @@ func()CreateProduct(cmd CreateProductCommand) error {
 	return nil
 }
 
-AddProductCommand struct {
+type AddProductCommand struct {
 	ID 					string 
 	Name 				string 
 	PriceCents 	uint 

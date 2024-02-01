@@ -23,7 +23,7 @@ func (p *Product) Name() string {
 	return p.name
 }
 
-func (p *Product) Price() price.Price {
+func (p Product) Price() price.Price {
 	return p.price
 }
 

@@ -32,6 +32,7 @@ func NewOrdersService(productsService productsService, payementsService payement
 type PlaceOrderCommand struct {
 		OrderID string
 		ProductID string
+		Address  PlaceOrderCommandAddress
 }
 type PlaceOrderCommandAddress struct {
 	Name string
@@ -71,7 +72,7 @@ func (s OrdersService) PlaceOrder(cmd PlaceOrderCommand) error {
 	if err := s.ordersRepository.Create(newOrder); err != nil {
 		return errors.Wrap(err, "Error saving new order")
 	}
-	if err := s.payementsService.InitializeOrderPayement(newOrder.OrderID(), (*newOrder.Product()).Price()); err != nil {
+	if err := s.payementsService.InitializeOrderPayement(newOrder.OrderID(), newOrder.Product().Price()); err != nil {
 		return errors.Wrap(err, "Error initializing order payement")
 	}
 	log.Printf("Order %s has been placed", newOrder.OrderID())

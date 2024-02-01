@@ -10,7 +10,7 @@ func TestNewOrder(t *testing.T) {
     product := Product{} // Remplacez ceci par une instance valide de Product
     adress := Adress{}  // Remplacez ceci par une instance valide de Adress
 
-    order, err := NewOrder(id, product, adress)
+    order, err := NewOrder(id, product, &adress)
     if err != nil {
         t.Errorf("Expected no error, got %v", err)
     }
@@ -40,7 +40,7 @@ func TestMarkAsPaid(t *testing.T) {
 				price: *price.NewPriceP(100, "USD"),
 		} 
     adress := Adress{}  
-    order, err := NewOrder(id, product, adress)
+    order, err := NewOrder(id, product, &adress)
     if err != nil {
         t.Errorf("Expected no error, got %v", err)
     }

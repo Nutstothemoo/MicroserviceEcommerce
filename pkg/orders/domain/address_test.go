@@ -5,32 +5,32 @@ import (
 )
 
 func TestNewAdress(t *testing.T) {
-    _, err := NewAdress("", "street", "city", "postcode", "country")
+    _, err := NewAddress("", "street", "city", "postcode", "country")
     if err == nil || err.Error() != "name can not be empty" {
         t.Errorf("Expected 'name can not be empty' error, got %v", err)
     }
 
-    _, err = NewAdress("name", "", "city", "postcode", "country")
+    _, err = NewAddress("name", "", "city", "postcode", "country")
     if err == nil || err.Error() != "street can not be empty" {
         t.Errorf("Expected 'street can not be empty' error, got %v", err)
     }
 
-    _, err = NewAdress("name", "street", "", "postcode", "country")
+    _, err = NewAddress("name", "street", "", "postcode", "country")
     if err == nil || err.Error() != "city can not be empty" {
         t.Errorf("Expected 'city can not be empty' error, got %v", err)
     }
 
-    _, err = NewAdress("name", "street", "city", "", "country")
+    _, err = NewAddress("name", "street", "city", "", "country")
     if err == nil || err.Error() != "postcode can not be empty" {
         t.Errorf("Expected 'postcode can not be empty' error, got %v", err)
     }
 
-    _, err = NewAdress("name", "street", "city", "postcode", "")
+    _, err = NewAddress("name", "street", "city", "postcode", "")
     if err == nil || err.Error() != "country can not be empty" {
         t.Errorf("Expected 'country can not be empty' error, got %v", err)
     }
 
-    ad, err := NewAdress("name", "street", "city", "postcode", "country")
+    ad, err := NewAddress("name", "street", "city", "postcode", "country")
     if err != nil {
         t.Errorf("Expected no error, got %v", err)
     }

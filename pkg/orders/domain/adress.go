@@ -11,7 +11,7 @@ type Adress struct {
 }
 
 
-func NewAdress(name, street, city, postcode, country string) (*Adress, error) {
+func NewAddress(name, street, city, postcode, country string) (*Adress, error) {
 	if name == "" {
 		return nil, errors.New("name can not be empty")
 	}
@@ -29,7 +29,6 @@ func NewAdress(name, street, city, postcode, country string) (*Adress, error) {
 	}
 	return &Adress{name, street, city, postcode, country}, nil
 }
-
 
 
 
