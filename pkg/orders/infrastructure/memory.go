@@ -1,44 +1,48 @@
 package memory
 
 import (
-	// "database/sql"
 	"microservice/pkg/orders/domain"
-	// _ "github.com/lib/pq"
 )
-
 type MemoryRepository struct {
-    orders []orders.Order	
+	orders []orders.Order	
 }
 
 func NewMemoryRepository() *MemoryRepository {
-    return &MemoryRepository{[]orders.Order{}}
+	return &MemoryRepository{[]orders.Order{}}
 }
 
 func (m *MemoryRepository) Save(orderToSave *orders.Order) error {
-    for i, o := range m.orders {
-        if o.ID() == orderToSave.ID() {
-            m.orders[i] = *orderToSave
-            return nil
-        }
-    }
-    m.orders = append(m.orders, *orderToSave)
-    return nil	
+	for i, o := range m.orders {
+			if o.OrderID() == orderToSave.OrderID() {
+					m.orders[i] = *orderToSave
+					return nil
+			}
+	}
+	m.orders = append(m.orders, *orderToSave)
+	return nil	
 }
 
 func (m MemoryRepository) ByID(id orders.OrderID) (*orders.Order, error){
-    for _, o := range m.orders {
-        if o.ID() == id {
-            return &o, nil
-        }
-    }
-    return nil, orders.ErrNotFound
+	for _, o := range m.orders {
+			if o.OrderID() == id {
+					return &o, nil
+			}
+	}
+	return nil, orders.ErrNotFound
 }
 
 func (m *MemoryRepository) AllOrders()([]orders.Order, error) {
-    return m.orders, nil
+	return m.orders, nil
 }
 
-// POSTGRES
+// package memory
+
+// import (
+// 	"database/sql"
+// 	"microservice/pkg/orders/domain"
+// 	_ "github.com/lib/pq"
+// )
+
 
 // type PostgresRepository struct {
 // 	db *sql.DB
@@ -56,7 +60,7 @@ func (m *MemoryRepository) AllOrders()([]orders.Order, error) {
 // }
 
 // func (p *PostgresRepository) Save(orderToSave *orders.Order) error {
-// 	// This is a placeholder SQL statement. You should replace it with your actual SQL statement.
+	
 // 	sqlStatement := `
 // 	INSERT INTO orders (id, name, price)
 // 	VALUES ($1, $2, $3)
@@ -68,12 +72,11 @@ func (m *MemoryRepository) AllOrders()([]orders.Order, error) {
 // }
 
 // func (p *PostgresRepository) ByID(id orders.OrderID) (*orders.Order, error) {
-// 	// This is a placeholder SQL statement. You should replace it with your actual SQL statement.
 // 	sqlStatement := `SELECT id, name, price FROM orders WHERE id = $1;`
 // 	row := p.db.QueryRow(sqlStatement, id)
 
 // 	var order orders.Order
-// 	err := row.Scan(&order.ID, &order.Name, &order.Price)
+// 	err := row.Scan(order.OrderID(), order.Name(), order.Price())
 // 	if err == sql.ErrNoRows {
 // 			return nil, orders.ErrNotFound
 // 	} else if err != nil {

@@ -1,23 +1,23 @@
 package application
 
 import (
-	"microservice/pkg/products/domain/products"
 	"microservice/pkg/common/price"
-	"errors"
+	"github.com/pkg/errors"
+	"microservice/pkg/shop/domain"
 )
 
 type productReadModel interface {
 	AllProducts() ([]products.Product, error)
 	AddProduct(cmd AddProductCommand) error
 	ProductById(id string) (products.Product, error)
-	CreateProduct(cmd CreateProductCommand) error
-	RemoveProduct(cmd RemoveProductCommand) error
-	UpdateProduct(cmd UpdateProductCommand) error
+	// CreateProduct(cmd CreateProductCommand) error
+	// RemoveProduct(cmd RemoveProductCommand) error
+	// UpdateProduct(cmd UpdateProductCommand) error
 }
 
 type productsService struct {
-	 repo products.Repository
-	 readModel productReadModel
+	repo products.Repository
+	readModel productReadModel
 }
 
 func NewProductsService(repo products.Repository, readModel productReadModel) productsService {
@@ -26,16 +26,12 @@ func NewProductsService(repo products.Repository, readModel productReadModel) pr
 		readModel: readModel,
 	}
 }
-func(s productsService)AllProducts() ([]Product, error) {
+func(s productsService) AllProducts() ([]products.Product, error) {
 	return s.readModel.AllProducts()
 }
 
-func()ProductById(id string) (Product, error) {
-	return Product{}, nil
-}
-
-func()CreateProduct(cmd CreateProductCommand) error {
-	return nil
+func(s productsService) ProductById(id string) (products.Product, error) {
+	return products.Product{}, nil
 }
 
 type AddProductCommand struct {
@@ -60,12 +56,17 @@ func (s productsService)AddProduct(cmd AddProductCommand) error {
 	if err:= s.repo.Save(p); err != nil {
 		return errors.Wrap(err, "Error saving product")
 	}
-}
-
-func (s productsService)RemoveProduct(cmd RemoveProductCommand) error {
 	return nil
 }
 
-func (s productsService)UpdateProduct(cmd UpdateProductCommand) error {	
-	return nil
-}
+// func()CreateProduct(cmd CreateProductCommand) error {
+// 	return nil
+// }
+
+// func (s productsService)RemoveProduct(cmd RemoveProductCommand) error {
+// 	return nil
+// }
+
+// func (s productsService)UpdateProduct(cmd UpdateProductCommand) error {	
+// 	return nil
+// }

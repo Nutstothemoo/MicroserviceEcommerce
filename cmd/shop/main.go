@@ -2,10 +2,13 @@ package main
 
 import (
 	"log"
-	"fmt"
 	"os"
 	"net/http"
-	"cmd"
+	"microservice/pkg/common/cmd"
+	shop_infra_product "microservice/pkg/shop/infrastructure/products"
+	shop_interface_public_http "microservice/pkg/shop/interfaces/public/http"
+	shop_interface_private_http "microservice/pkg/shop/interfaces/private/http"
+	"github.com/go-chi/chi"
 )
 
 func main() {
@@ -30,12 +33,14 @@ func main() {
 
 }
 
-func createShopMicroservice () *chi.Mux {
+func createShopMicroservice () (*chi.Mux, func())  {
 	
-	shopProductRepo := shop_infra_product.NewMemoryRepository(
+	shopProductRepo := shop_infra_product.NewMemoryRepository()
 	r := cmd.CreateRouter()
 	
 	shop_interface_public_http.AddRoutes(r, shopProductRepo)
 	shop_interface_private_http.AddRoutes(r, shopProductRepo)	
-	)
+	closeFn := func() {}
+
+	return r, closeFn
 }

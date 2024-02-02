@@ -8,4 +8,5 @@ require (
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/go-chi/chi v1.5.5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rabbitmq/amqp091-go v1.9.0 // indirect
 )

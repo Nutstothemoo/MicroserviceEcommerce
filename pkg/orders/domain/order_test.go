@@ -27,8 +27,8 @@ func TestNewOrder(t *testing.T) {
         t.Errorf("Expected Adress to be %v, got %v", adress, order.Adress())
     }
 
-    if order.Paid() != false {
-        t.Errorf("Expected Paid to be false, got %v", order.Paid())
+    if order.IsPaid() != false {
+        t.Errorf("Expected Paid to be false, got %v", order.IsPaid())
     }
 }
 
@@ -47,7 +47,7 @@ func TestMarkAsPaid(t *testing.T) {
 
     order.MarkAsPaid()
 
-    if order.Paid() != true {
-        t.Errorf("Expected Paid to be true, got %v", order.Paid())
+    if order.IsPaid() != true {
+        t.Errorf("Expected Paid to be true, got %v", order.IsPaid())
     }
 }

@@ -4,7 +4,6 @@ import (
 	"log"
 	"microservice/pkg/common/cmd"
 	application_shop "microservice/pkg/shop/application"
-	payements_app "microservice/pkg/payements/application"
 	application_order "microservice/pkg/orders/application"
 	order_private_http "microservice/pkg/orders/interfaces/private/http"
 	orders_public_http "microservice/pkg/orders/interfaces/public/http"

@@ -5,11 +5,12 @@ import (
 	"log"
 	"microservice/pkg/common/cmd"
 	"os"
+	
 	payements_app "microservice/pkg/payements/application"
-	payements_infra_orders "microservice/pkg/payements/infrastructure/orders"
-	"microservice/pkg/payements/application"
-	"microservice/pkg/payements/infra/orders"
-	"microservice/pkg/payements/interfaces/amqp"
+	// payements_infra_orders "microservice/pkg/payements/infrastructure/orders"
+	// "microservice/pkg/payements/application"
+	// "microservice/pkg/payements/infra/orders"
+	// "microservice/pkg/payements/interfaces/amqp"
 
 )
 

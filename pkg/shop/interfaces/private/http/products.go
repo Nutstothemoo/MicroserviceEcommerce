@@ -2,20 +2,27 @@ package http
 
 
 import (
-	"encoding/json"
+	common_http "microservice/pkg/common/http"
 	"net/http"
+	"microservice/pkg/shop/domain"
 	"github.com/go-chi/render"
+	"microservice/pkg/common/price"
+	products_domain "microservice/pkg/orders/domain"
 	"github.com/go-chi/chi"
 )
 
-func AddRoutes(router *chi.Mux , repo products_domain.MemoryRepository){
-	resource := productsResource{repo}
+func AddRoutes(router *chi.Mux, productsReadModel productsReadModel) {
+	resource := productsResource{productsReadModel}
 	router.Get("/products", resource.GetAll)
-	router.Get("/products/{id}", resource.GetByID)	
+	router.Get("/products/{id}", resource.GetByID)
 }
 
+type productsReadModel interface {
+	AllProducts() ([]products.Product, error)
+	ByID(products_domain.ProductID) (products.Product, error)
+}
 type productsResource struct {
-	repo products_domain.Repository
+	readModel productsReadModel
 }
 
 type PriceView struct {
@@ -30,26 +37,46 @@ func priceViewFromPrice(p price.Price) PriceView {
 	}
 }
 
-func (p productsResource) GetAll(w http.ResponseWriter, r *http.Request) {
-	products, err := p.repo.AllProducts()
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	json.NewEncoder(w).Encode(products)
+type productView struct {
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Price       PriceView `json:"price"`
 }
 
 
-func (p productsResource) GetByID(w http.ResponseWriter, r *http.Request) {
-	product, err := p.repo.ByID(products_domain.ProductID(r.URL.Query().Get("id")))
+func (p productsResource) GetAll(w http.ResponseWriter, r *http.Request) {
+	products, err := p.readModel.AllProducts()
 	if err != nil {
 		_ = render.Render(w, r, common_http.ErrInternal(err))
 		return
 	}
-	render.Respond(w, r, ProductView{
-		string(product.ID()),
-		product.Name(),
-		product.Description(),
-		priceViewFromPrice(product.Price()),
-	})
+	view := []productView{}
+	for _, product := range products {
+		view = append(view, productView{
+			ID:          string(product.ID()),
+			Name:        product.Name(),
+			Description: product.Description(),
+			Price:       priceViewFromPrice(product.Price()),
+		})
+	}
+	render.Respond(w, r, view)
+}
+
+func (p productsResource) GetByID(w http.ResponseWriter, r *http.Request) {
+	productID := chi.URLParam(r, "id")
+	product, err := p.readModel.ByID(products_domain.ProductID(productID))
+	if err != nil {
+			_ = render.Render(w, r, common_http.ErrInternal(err))
+			return
+	}
+
+	view := productView{
+			ID:          string(product.ID()),
+			Name:        product.Name(),
+			Description: product.Description(),
+			Price:       priceViewFromPrice(product.Price()),
+	}
+
+	render.Respond(w, r, view)
 }
